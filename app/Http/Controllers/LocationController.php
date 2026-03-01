@@ -14,7 +14,7 @@ class LocationController extends Controller
         $locations = Location::latest('id')
             ->when($request->search, fn($q, $name) => $q->searchByName(name: $name))
             ->when($request->needPagination,
-                fn($query) => $query->paginate($request->pagination),
+                fn($query) => $query->paginate($request->integer('pagination', 10)),
                 fn($query) => $query->get());
 
         return $locations->toResourceCollection();

@@ -5,12 +5,19 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PresentationRequest;
 use App\Http\Resources\PresentationResource;
 use App\Models\Presentation;
+use Illuminate\Http\Request;
 
 class PresentationController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return PresentationResource::collection(Presentation::all());
+        $presentations = Presentation::latest('id')
+            ->when($request->search, fn($q, $name) => $q->searchByName(name: $name))
+            ->when($request->needPagination,
+                fn($query) => $query->paginate($request->integer('pagination', 10)),
+                fn($query) => $query->get());
+
+        return PresentationResource::collection($presentations);
     }
 
     public function store(PresentationRequest $request)

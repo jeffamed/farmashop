@@ -3,11 +3,15 @@
 namespace App\Models;
 
 use App\Traits\HasSearchScope;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+/**
+ * @method static Builder searchByName(string $name)
+ */
 class Customer extends Model
 {
     use HasFactory, SoftDeletes, HasSearchScope;
