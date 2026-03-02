@@ -29,11 +29,16 @@ class OrderController extends Controller
         return OrderResource::collection($orders);
     }
 
+    /**
+     * @throws \Throwable
+     */
     public function store(OrderRequest $request)
     {
         return DB::transaction(function () use ($request) {
             $order = Order::create($request->validated());
-            $order->details()->createMany($request->array('details'));
+            if ($request->filled('details')){
+                $this->service->registerDetail($order, $request->array('details'));
+            }
 
             if ($request->has('reimbursement') && $request->integer('reimbursement') > 0) {
                 $this->service->storeReimbursement($request->integer('reimbursement'), $order->id);

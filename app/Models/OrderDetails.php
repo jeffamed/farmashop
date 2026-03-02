@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Actions\CalculateTotal;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -48,11 +49,7 @@ class OrderDetails extends Model
         return Attribute::make(
             get: fn($value) => (float) $value,
             set: function($value, array $attributes) {
-                $qty = $attributes['quantity'] ?? 0;
-                $price = $attributes['unit_price'] ?? 0;
-                $discount = ($attributes['discount'] ?? 0)/100;
-                $subTotal = $qty * $price;
-                return $subTotal - ($discount * $subTotal);
+                return CalculateTotal::handle($attributes);
             },
         );
     }

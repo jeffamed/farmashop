@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Actions\CalculateTotal;
 use App\Enums\StatusesReimbursement;
 use App\Models\Order;
+use App\Models\OrderDetails;
 use App\Models\Reimbursement;
 use App\Models\Supplier;
 use App\Models\User;
@@ -52,6 +54,23 @@ class OrderService
         $reimbursement->save();
         return $reimbursement;
         //TODO: Enviar notificación al usuario, Registrar en tabla de historial, Enviar email, Notificar a contabilidad, Registrar auditoría, Enviar webhook, Disparar un Job
+    }
+
+    public function registerDetail(Order $order, array $details): void
+    {
+        $now = now();
+        $data = collect($details)->map(fn($detail) => [
+            'order_id' => $order->id,
+            'product_id' => $detail['product_id'],
+            'quantity' => $detail['quantity'],
+            'unit_price' => $detail['unit_price'],
+            'discount' => $detail['discount'],
+            'total' => CalculateTotal::handle($detail),
+            'created_at' => $now,
+            'updated_at' => $now,
+        ])->toArray();
+
+        OrderDetails::insert($data);
     }
 
 }
