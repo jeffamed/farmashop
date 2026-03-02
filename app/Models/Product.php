@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\HasSearchScope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,10 +11,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 
+/**
+ * @method static Builder|QueryBuilder search(string $name)
+ */
 class Product extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasSearchScope;
 
     protected $fillable = [
         'code',
@@ -73,7 +79,7 @@ class Product extends Model
     public function cost(): Attribute
     {
         return Attribute::make(
-            get: function (){
+            get: function () {
                 return $this->lastOrderDetails()->value('unit_price');
             }
         );
@@ -82,12 +88,13 @@ class Product extends Model
     public function costPrev(): Attribute
     {
         return Attribute::make(
-            get: function (){
+            get: function () {
                 $previousOrder = $this->orderDetails()->skip(1)->orderByDesc('created_at')->first();
                 return $previousOrder?->unit_price;
             }
         );
     }
+
     protected function casts(): array
     {
         return [

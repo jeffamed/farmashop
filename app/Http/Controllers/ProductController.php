@@ -5,17 +5,30 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
+use App\Services\ProductService;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index()
+    public ProductService $productService;
+    public function __construct()
     {
+        $this->productService = new ProductService();
+    }
+    public function index(Request $request)
+    {
+        $products = Product::latest('id')
+            ->when($request->input('search', ''),
+                fn($q, $name) => $q->search($name))
+                ->paginate($request->integer('pagination', 10));
+
         return ProductResource::collection(Product::all());
     }
 
     public function store(ProductRequest $request)
     {
-        return new ProductResource(Product::create($request->validated()));
+        $product = $this->productService->create($request->validated(), $request->array('usages.*.id'));
+        return new ProductResource($product);
     }
 
     public function show(Product $product)
@@ -26,6 +39,10 @@ class ProductController extends Controller
     public function update(ProductRequest $request, Product $product)
     {
         $product->update($request->validated());
+
+        if ($request->array('usages.*.id')) {
+            $product->usages()->sync($request->array('usages.*.id'));
+        }
 
         return new ProductResource($product);
     }
