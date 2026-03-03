@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductRequest;
 use App\Http\Resources\ProductResource;
+use App\Models\OrderDetails;
 use App\Models\Product;
+use App\Models\Usage;
 use App\Services\ProductService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -52,5 +55,10 @@ class ProductController extends Controller
         $product->delete();
 
         return response()->json();
+    }
+
+    private function search(Request $request)
+    {
+        return $this->productService->searchByCondition($request->toArray());
     }
 }
