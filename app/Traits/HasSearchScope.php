@@ -22,4 +22,11 @@ trait HasSearchScope
         $search = "%{$name}%";
         return $query->where('name', 'like', $search);
     }
+
+    #[Scope]
+    public function searchByDescription(Builder $query, string $description): Builder
+    {
+        $search = "%{$description}%";
+        return $query->where('description', 'like', $search);
+    }
 }

@@ -5,12 +5,21 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UsageRequest;
 use App\Http\Resources\UsageResource;
 use App\Models\Usage;
+use App\Services\UsageService;
+use Illuminate\Http\Request;
 
 class UsageController extends Controller
 {
-    public function index()
+    public UsageService $service;
+    public function __construct()
     {
-        return UsageResource::collection(Usage::all());
+        $this->service = new UsageService();
+    }
+
+    public function index(Request $request)
+    {
+        $usages = $this->service->getUsages($request->toArray());
+        return UsageResource::collection($usages);
     }
 
     public function store(UsageRequest $request)
