@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Sale;
 use App\Dtos\SalesFilter;
+use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\Request;
 use App\Services\SaleService;
 use App\Http\Requests\SaleRequest;
@@ -25,7 +26,9 @@ class SaleController extends Controller
 
     public function store(SaleRequest $request)
     {
-        $sale = Sale::create($request->validated());
+        $data = $request->validated();
+        $data['user_id'] = \Auth::id();
+        $sale = Sale::create($data);
         if ($request->filled('details')){
             $this->saleService->registerDetail($sale, $request->array('details'));
         }
