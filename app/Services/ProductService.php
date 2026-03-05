@@ -71,7 +71,7 @@ class ProductService
         $products->each(function ($product) use ($type) {
             $orderDetail = $product->orderDetails->first();
             $product['reimbursement'] = 0;
-            $product['order'] = optional($orderDetail)->orderQty;
+            $product['order'] = optional($orderDetail)->quantity;
             $product['unitPrice'] = optional($orderDetail)->unit_price;
             if ($type === 'reimbursement') {
                 $product['discountOrder'] = optional($orderDetail)->discount;
