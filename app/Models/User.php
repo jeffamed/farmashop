@@ -11,14 +11,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
- * @method static Builder searchByName(string $name)
+ * @method static Builder search(string $name)
  */
 class User extends Authenticatable
 {
     use HasRoles, HasSearchScope, HasSearchScope;
 
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasSearchScope;
 
     /**
      * The attributes that are mass assignable.
@@ -26,9 +26,13 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        'document',
         'name',
+        'last_name',
         'email',
         'password',
+        'address',
+        'phone'
     ];
 
     /**
