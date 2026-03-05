@@ -7,9 +7,11 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Http\Request;
 
 /**
  * @method static Builder searchByName(string $name)
+ * @method static Builder search(Request $request)
  */
 class Supplier extends Model
 {
