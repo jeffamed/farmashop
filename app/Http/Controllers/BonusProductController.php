@@ -15,7 +15,7 @@ class BonusProductController extends Controller
         $lock = Cache::lock('bonusProcessing', 10);
         try {
             if ($lock->get()) {
-                $product->stock += $request->integer('quantity');
+                $product->increment('stock', $request->integer('quantity'));
                 $product->save();
             } else {
                 return response()->json(['message' => 'El recurso está siendo usado por otro proceso'], Response::HTTP_LOCKED);
