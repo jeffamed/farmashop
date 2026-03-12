@@ -11,6 +11,12 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\BonusProductController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\SaleController;
+use App\Http\Controllers\TypeController;
+use App\Http\Controllers\UsageController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\CloseCashController;
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
@@ -25,11 +31,11 @@ Route::middleware(['auth:sanctum'])->prefix('v1')->group(function (){
     Route::apiResource('orders', OrderController::class);
     Route::apiResource('bonus-products', BonusProductController::class);
     Route::apiResource('products', ProductController::class);
-    Route::get('reports', ReportController::class)->name('reports');
-    Route::apiResource('suppliers', \App\Http\Controllers\SupplierController::class);
-    Route::apiResource('sales', \App\Http\Controllers\SaleController::class);
-    Route::apiResource('types', \App\Http\Controllers\TypeController::class);
-    Route::apiResource('usages', \App\Http\Controllers\UsageController::class);
-    Route::apiResource('users', \App\Http\Controllers\UserController::class);
-    Route::post('close-cash', \App\Http\Controllers\CloseCashController::class)->name('close-cash');
+    Route::get('reports', [ReportController::class, 'index'])->name('reports');
+    Route::apiResource('suppliers', SupplierController::class);
+    Route::apiResource('sales', SaleController::class);
+    Route::apiResource('types', TypeController::class);
+    Route::apiResource('usages', UsageController::class);
+    Route::apiResource('users', UserController::class);
+    Route::post('close-cash', CloseCashController::class)->name('close-cash');
 });

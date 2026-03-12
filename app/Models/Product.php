@@ -3,22 +3,26 @@
 namespace App\Models;
 
 use App\Traits\HasSearchScope;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Observers\ProductObserver;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 
 /**
  * @method static Builder|QueryBuilder search(string $name)
  */
+#[ObservedBy([ProductObserver::class])]
 class Product extends Model
 {
-    use HasFactory, SoftDeletes, HasSearchScope;
+    use HasFactory, SoftDeletes, HasSearchScope, Notifiable;
 
     protected $fillable = [
         'code',

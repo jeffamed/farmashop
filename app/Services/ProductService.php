@@ -12,8 +12,7 @@ use Illuminate\Support\Facades\DB;
 class ProductService
 {
     public function __construct()
-    {
-    }
+    {}
 
     public function create(array $data, array $usages): Product
     {

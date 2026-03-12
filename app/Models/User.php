@@ -15,7 +15,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  */
 class User extends Authenticatable
 {
-    use HasRoles, HasSearchScope, HasSearchScope;
+    use HasRoles, HasSearchScope, HasSearchScope, Notifiable;
 
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasSearchScope;

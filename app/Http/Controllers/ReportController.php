@@ -19,9 +19,9 @@ class ReportController extends Controller
     {
         $products = Product::all();
 
-        $pdf = \PDF::loadView('report.all_product', compact('products'));
+        //$pdf = \PDF::loadView('report.all_product', compact('products'));
 
-        return $pdf->download('inventario.pdf');
+        //return $pdf->download('inventario.pdf');
     }
 
     public function sales()
@@ -37,8 +37,8 @@ class ReportController extends Controller
             ->selectRaw('sum(subtotal) as subTotal, sum(discount) as Descuento, sum(total) as Total')
             ->whereYear('created_at',now())
             ->get();
-        $pdf = \PDF::loadView('report.sales', compact('sales','sales_total'))->setPaper('letter', 'portrait');
-        return $pdf->download('ventas_segun_meses.pdf');
+        //$pdf = \PDF::loadView('report.sales', compact('sales','sales_total'))->setPaper('letter', 'portrait');
+        //return $pdf->download('ventas_segun_meses.pdf');
     }
 
     public function invoice(Sale $sale, $type)
@@ -47,8 +47,8 @@ class ReportController extends Controller
 
         $details = SaleDetails::with('product')->where('sale_id', $sale->id)->get();
 
-        $pdf = \PDF::loadView('report.invoice', compact('sale','customer','details'))->setPaper('letter', 'landscape');
-        return $type === 'download' ? $pdf->download('factura.pdf') : $pdf->stream();
+        //$pdf = \PDF::loadView('report.invoice', compact('sale','customer','details'))->setPaper('letter', 'landscape');
+        //return $type === 'download' ? $pdf->download('factura.pdf') : $pdf->stream();
 
     }
 }
