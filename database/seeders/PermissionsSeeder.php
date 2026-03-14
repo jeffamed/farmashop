@@ -114,10 +114,6 @@ class PermissionsSeeder extends Seeder
                 'label' => 'Crear Ventas',
             ],
             [
-                'name' => 'sale.create',
-                'label' => 'Crear Ventas',
-            ],
-            [
                 'name' => 'sale.delete',
                 'label' => 'Eliminar Ventas',
             ],
@@ -139,6 +135,7 @@ class PermissionsSeeder extends Seeder
             ],
             [
                 'name' => 'type',
+                'label' => 'Tipo de Prod.',
                 'label' => 'Tipo de Prod.',
             ],
             [

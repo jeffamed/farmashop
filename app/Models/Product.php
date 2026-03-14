@@ -15,14 +15,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Laravel\Scout\Searchable;
 
 /**
  * @method static Builder|QueryBuilder search(string $name)
+ * @method static Builder|QueryBuilder searchByName(string $name)
  */
 #[ObservedBy([ProductObserver::class])]
 class Product extends Model
 {
-    use HasFactory, SoftDeletes, HasSearchScope, Notifiable;
+    use HasFactory, SoftDeletes, HasSearchScope, Notifiable, Searchable;
 
     protected $fillable = [
         'code',
@@ -103,6 +105,20 @@ class Product extends Model
     {
         return [
             'expired_at' => 'datetime',
+        ];
+    }
+
+    /**
+     * Get the indexable data array for the model.
+     *
+     * @return array<string, mixed>
+     */
+    public function toSearchableArray(): array
+    {
+        #$array = $this->toArray();
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
         ];
     }
 }

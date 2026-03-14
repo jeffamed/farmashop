@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 
 /**
  * @method static Builder searchByName(string $name)
- * @method static Builder search(Request $request)
+ * @method static Builder searchColumn(Request $request)
  */
 class Supplier extends Model
 {

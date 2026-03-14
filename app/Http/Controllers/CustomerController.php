@@ -12,7 +12,7 @@ class CustomerController extends Controller
 {
     public function index(Request $request)
     {
-        $customers = Customer::query()->search($request)
+        $customers = Customer::query()->searchColumn($request)
             ->latest('id')
             ->paginate($request->integer('pagination', 10));
 

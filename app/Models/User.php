@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
- * @method static Builder search(string $name)
+ * @method static Builder searchByName(string $name)
  */
 class User extends Authenticatable
 {

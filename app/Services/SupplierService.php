@@ -17,7 +17,7 @@ class SupplierService
     {
         $suppliers = Supplier::query()
             ->latest('id')
-            ->when($params['search'], fn(Builder $query, $text) => $query->search($text));
+            ->when($params['search'], fn(Builder $query, $text) => $query->searchByName($text));
 
         return $params['needPagination'] ? $suppliers->paginate( $params['pagination']) : $suppliers->get() ;
     }

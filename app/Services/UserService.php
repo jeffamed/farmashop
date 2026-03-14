@@ -16,7 +16,7 @@ class UserService
         $usages = User::query()
             ->with('roles')
             ->latest('id')
-            ->when($params['search'], fn(Builder $query, $text) => $query->search($text));
+            ->when($params['search'], fn(Builder $query, $text) => $query->searchByName($text));
 
         return $params['needPagination'] ? $usages->paginate($params['pagination']) : $usages->get();
     }

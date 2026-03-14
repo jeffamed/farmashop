@@ -4,7 +4,7 @@ namespace App\Actions;
 
 class CalculateTotal
 {
-    public function handle(array $attributes): float
+    public static function handle(array $attributes): float
     {
         $qty = $attributes['quantity'] ?? 0;
         $price = $attributes['unit_price'] ?? 0;

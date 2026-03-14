@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Attributes\Scope;
 trait HasSearchScope
 {
     #[Scope]
-    public function search(Builder $query, Request $request): Builder
+    public function searchColumn(Builder $query, Request $request): Builder
     {
         $search = "%{$request->input('search')}%";
         $column = (string)$request->input('column');

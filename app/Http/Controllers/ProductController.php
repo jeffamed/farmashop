@@ -22,7 +22,7 @@ class ProductController extends Controller
     {
         $products = Product::latest('id')
             ->when($request->input('search', ''),
-                fn($q, $name) => $q->search($name))
+                fn($q, $name) => $q->searchByName($name))
                 ->paginate($request->integer('pagination', 10));
 
         return ProductResource::collection(Product::all());

@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Query\Builder as BuilderQuery;
 
 /**
- * @method static Builder|BuilderQuery search(string $name)
+ * @method static Builder|BuilderQuery searchByName(string $name)
  */
 class Laboratory extends Model
 {

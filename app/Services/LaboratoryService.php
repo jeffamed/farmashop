@@ -17,7 +17,7 @@ class LaboratoryService
     {
         $laboratoriesQuery =  Laboratory::query()
             ->latest('id')
-            ->when($params['search'], fn(Builder $query, $text) => $query->search($text));
+            ->when($params['search'], fn(Builder $query, $text) => $query->searchByName($text));
 
         return $params['needPagination'] ? $laboratoriesQuery->paginate( $params['pagination']) : $laboratoriesQuery->get() ;
 
