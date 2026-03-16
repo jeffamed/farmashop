@@ -118,6 +118,7 @@ class Product extends Model
         #$array = $this->toArray();
         return [
             'id' => $this->id,
+            'code' => $this->code,
             'name' => $this->name,
         ];
     }

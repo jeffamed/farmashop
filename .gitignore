@@ -24,3 +24,5 @@ Homestead.yaml
 Thumbs.db
 /meili_data
 /meili_data/*
+/minio_data
+/minio_data/*
