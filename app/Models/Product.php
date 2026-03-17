@@ -16,15 +16,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Laravel\Scout\Searchable;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 /**
  * @method static Builder|QueryBuilder search(string $name)
  * @method static Builder|QueryBuilder searchByName(string $name)
  */
 #[ObservedBy([ProductObserver::class])]
-class Product extends Model
+class Product extends Model implements HasMedia
 {
-    use HasFactory, SoftDeletes, HasSearchScope, Notifiable, Searchable;
+    use HasFactory, SoftDeletes, HasSearchScope, Notifiable, Searchable, InteractsWithMedia;
 
     protected $fillable = [
         'code',
@@ -121,5 +124,17 @@ class Product extends Model
             'code' => $this->code,
             'name' => $this->name,
         ];
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('images-product')->useDisk('s3')->singleFile();
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('thumb')->width(200)->height(200);
+
+        $this->addMediaConversion('preview')->width(600)->height(600);
     }
 }

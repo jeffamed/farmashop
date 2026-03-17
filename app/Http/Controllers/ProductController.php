@@ -31,6 +31,7 @@ class ProductController extends Controller
     public function store(ProductRequest $request)
     {
         $product = $this->productService->create($request->validated(), $request->array('usages.*.id'));
+        $product->addMedia($request->file('image'))->toMediaCollection('images-product', 's3');
         return new ProductResource($product);
     }
 
