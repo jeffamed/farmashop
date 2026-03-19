@@ -9,6 +9,7 @@ use App\Models\Product;
 use App\Models\Usage;
 use App\Services\ProductService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
@@ -37,7 +38,12 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        return new ProductResource($product);
+        $data = Cache::store('redis')
+            ->remember("product:{$product->id}", 3600,
+                fn() => (new ProductResource($product->load('media')))->resolve()
+            );
+
+        return response()->json($data);
     }
 
     public function update(ProductRequest $request, Product $product)

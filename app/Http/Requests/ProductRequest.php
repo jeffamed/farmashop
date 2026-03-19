@@ -14,13 +14,14 @@ class ProductRequest extends FormRequest
             'price' => ['required', 'numeric'],
             'stock' => ['required', 'integer'],
             'discount' => ['nullable', 'numeric'],
+            'unit_box' => ['required', 'numeric'],
             'box_stock' => ['required', 'numeric'],
             'expired_at' => ['nullable', 'date'],
-            'laboratory_id' => ['required', 'exists:laboratories'],
-            'type_id' => ['required', 'exists:types'],
-            'location_id' => ['required', 'exists:locations'],
-            'supplier_id' => ['required', 'exists:suppliers'],
-            'presentation_id' => ['required', 'exists:presentations'],
+            'laboratory_id' => ['required', 'exists:laboratories,id'],
+            'type_id' => ['required', 'exists:types,id'],
+            'location_id' => ['required', 'exists:locations,id'],
+            'supplier_id' => ['required', 'exists:suppliers,id'],
+            'presentation_id' => ['required', 'exists:presentations,id'],
         ];
     }
 

@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Models\Product;
 use App\Models\User;
 use App\Notifications\LowStockNotification;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 
 class ProductObserver
@@ -23,6 +24,11 @@ class ProductObserver
                 Redis::sRem($lowStockKey, $product->id);
             }
         }
+    }
+
+    public function updated(Product $product)
+    {
+        Cache::forget('product:' . $product->id);
     }
 
     private function LowStock($product, $lowStockKey): void

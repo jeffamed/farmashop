@@ -31,6 +31,7 @@ class ProductResource extends JsonResource
             'location_id' => $this->location_id,
             'supplier_id' => $this->supplier_id,
             'presentation_id' => $this->presentation_id,
+            'image' => $this->whenLoaded('media', fn () => $this->getFirstMediaUrl('images-product', 'thumb')),
 
             $this->mergeWhen($request->routeIs('products.index'), $this->mergeIndex()),
             $this->mergeWhen($request->routeIs('products.show'), $this->mergeShow()),

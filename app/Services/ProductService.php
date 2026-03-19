@@ -17,7 +17,9 @@ class ProductService
     public function create(array $data, array $usages): Product
     {
         $product = Product::create($data);
-        $product->usages()->sync($usages);
+        if (count($usages) > 0){
+            $product->usages()->sync($usages);
+        }
         return $product;
     }
 
