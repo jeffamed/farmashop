@@ -11,6 +11,8 @@ use App\Services\ProductService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
 
 class ProductController extends Controller
 {
@@ -49,7 +51,10 @@ class ProductController extends Controller
     public function update(ProductRequest $request, Product $product)
     {
         $product->update($request->validated());
-
+        if ($request->hasFile('image')) {
+            $product->addMedia($request->file('image'))
+                ->toMediaCollection('images-product', 's3');
+        }
         if ($request->array('usages.*.id')) {
             $product->usages()->sync($request->array('usages.*.id'));
         }
