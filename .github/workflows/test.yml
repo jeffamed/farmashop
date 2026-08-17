@@ -18,3 +18,5 @@ jobs:
         run: composer install --no-dev --prefer-dist
       - name: Check Farmashop's Laravel version
         run: php artisan --version
+      - name: Run tests
+        run: php artisan test
