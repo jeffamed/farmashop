@@ -1,0 +1,12 @@
+name: Laravel's Test FarmaShop
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the sources project
+        uses: actions/checkout@v7
+      - name: check php installed
+        run: php -v
+      - name: check composer installed
+        run: composer --version

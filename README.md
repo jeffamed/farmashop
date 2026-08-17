@@ -1,59 +1,180 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# FarmaShop
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+API para la gestión de una farmacia, desarrollada con Laravel 12 y PHP 8.3. Incluye administración de productos, inventario, ventas, compras, clientes, proveedores, reembolsos, usuarios, permisos y reportes.
 
-## About Laravel
+## Tecnologías
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- PHP 8.3 y Laravel 12
+- MySQL 8
+- Redis
+- Meilisearch y Laravel Scout
+- Almacenamiento compatible con S3 mediante Floci
+- Nginx y PHP-FPM
+- Docker Compose
+- Laravel Sanctum
+- Spatie Laravel Permission y Media Library
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Requisitos
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Docker Desktop con Docker Compose
+- Git
 
-## Learning Laravel
+No es necesario instalar PHP, Composer, MySQL ni Redis directamente en el equipo.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## Instalación con Docker
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+1. Clona el repositorio y entra al proyecto:
 
-## Laravel Sponsors
+   ```bash
+   git clone https://github.com/jeffamed/farmashop.git
+   cd farmashop
+   ```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+2. Crea el archivo de entorno.
 
-### Premium Partners
+   En PowerShell:
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+   ```powershell
+   Copy-Item .env.example .env
+   ```
 
-## Contributing
+   En Linux o macOS:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+   ```bash
+   cp .env.example .env
+   ```
 
-## Code of Conduct
+3. Configura como mínimo estas variables en `.env`:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+   ```env
+   APP_NAME=FarmaShop
+   APP_URL=http://localhost
 
-## Security Vulnerabilities
+   DB_CONNECTION=mysql
+   DB_HOST=mysql
+   DB_PORT=3306
+   DB_DATABASE=farmashop
+   DB_USERNAME=farmashop
+   DB_PASSWORD=secret
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+   CACHE_DRIVER=redis
+   REDIS_CLIENT=phpredis
+   REDIS_HOST=redis
+   REDIS_PASSWORD=null
+   REDIS_PORT=6379
 
-## License
+   SCOUT_DRIVER=meilisearch
+   MEILISEARCH_HOST=http://meilsearch:7700
+   MEILISEARCH_KEY=masterKey
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+   FILESYSTEM_DISK=s3
+   AWS_ACCESS_KEY_ID=test
+   AWS_SECRET_ACCESS_KEY=test
+   AWS_DEFAULT_REGION=us-east-1
+   AWS_BUCKET=farmashop
+   AWS_ENDPOINT=http://floci:4566
+   AWS_USE_PATH_STYLE_ENDPOINT=true
+   ```
+
+   Los nombres `mysql`, `redis`, `meilsearch` y `floci` son los nombres internos de los servicios Docker. No deben sustituirse por `127.0.0.1` cuando Laravel se ejecuta dentro del contenedor.
+
+4. Instala las dependencias, construye las imágenes e inicia los servicios:
+
+   ```bash
+   docker compose run --rm --no-deps composer install
+   docker compose up -d --build
+   ```
+
+5. Inicializa Laravel y la base de datos:
+
+   ```bash
+   docker compose exec php php artisan key:generate
+   docker compose exec php php artisan migrate --seed
+   docker compose exec php php artisan optimize:clear
+   ```
+
+La aplicación estará disponible en [http://localhost](http://localhost).
+
+El bucket indicado en `AWS_BUCKET` debe existir en Floci antes de guardar imágenes de productos.
+
+## Servicios y puertos
+
+| Servicio | Puerto del equipo | Uso |
+| --- | ---: | --- |
+| Nginx | 80 | API HTTP |
+| MySQL | 3306 | Base de datos |
+| Redis | 6379 | Caché y métricas |
+| Meilisearch | 7700 | Búsqueda de productos |
+| Floci | 4566 | API compatible con S3 |
+
+Si MySQL ya está instalado y ejecutándose en el equipo, el puerto `3306` estará ocupado. Puedes detener el MySQL local o cambiar en `compose.yml`:
+
+```yaml
+ports:
+  - "3307:3306"
+```
+
+Aunque se publique como `3307`, Laravel debe conservar `DB_HOST=mysql` y `DB_PORT=3306`. El puerto `3307` se utilizaría solamente para conectarse desde una aplicación del equipo, como DBeaver o PhpStorm.
+
+## Comandos útiles
+
+Consultar el estado de los contenedores:
+
+```bash
+docker compose ps
+```
+
+Ver los logs:
+
+```bash
+docker compose logs -f
+```
+
+Ejecutar comandos Artisan:
+
+```bash
+docker compose exec php php artisan <comando>
+```
+
+Procesar trabajos en cola:
+
+```bash
+docker compose exec php php artisan queue:work
+```
+
+Detener los servicios:
+
+```bash
+docker compose down
+```
+
+`docker compose down` no elimina los datos persistentes. No uses la opción `-v` si deseas conservarlos.
+
+## Persistencia
+
+Los datos se conservan en:
+
+- `mysql_data/`: base de datos MySQL.
+- `redis_data/`: datos de Redis.
+- `meili_data/`: índices de Meilisearch.
+- Volumen Docker `floci-data`: objetos administrados por Floci.
+
+La red `farmashop` permite que los contenedores se comuniquen entre sí, pero no almacena información.
+
+## Pruebas
+
+Ejecuta las pruebas dentro del contenedor PHP:
+
+```bash
+docker compose exec php php artisan test
+```
+
+El workflow [`.github/workflows/test.yml`](.github/workflows/test.yml) se activa con cada `push` y `pull_request`. Actualmente solo descarga el código mediante `actions/checkout`; todavía no configura PHP, instala dependencias ni ejecuta `php artisan test`.
+
+## API
+
+Los recursos principales se encuentran bajo el prefijo `/api/v1` y requieren autenticación con Laravel Sanctum. La API incluye endpoints para productos, ventas, órdenes, clientes, proveedores, laboratorios, ubicaciones, presentaciones, reembolsos, usuarios, tipos, usos, reportes y cierre de caja.
+
+## Licencia
+
+Este proyecto utiliza el framework Laravel, distribuido bajo la licencia MIT.
