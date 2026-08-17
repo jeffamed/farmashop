@@ -18,6 +18,8 @@ jobs:
         run: composer install --prefer-dist
       - name: Check Farmashop's Laravel version
         run: php artisan --version
+      - name: copy .env.example to .env
+        run: cp .env.example .env
       - name: generate key
         run: php artisan key:generate
       - name: Run tests
