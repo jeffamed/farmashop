@@ -15,10 +15,8 @@ jobs:
       - name: check composer installed
         run: composer --version
       - name: install dependencies
-        run: composer install --no-dev --prefer-dist
+        run: composer install --prefer-dist
       - name: Check Farmashop's Laravel version
         run: php artisan --version
-      - name: Check PHPUnit
-        run: ./vendor/bin/phpunit --version
-      - name: Check Artisan test command
-        run: php artisan list | grep test
+      - name: Run tests
+        run: php artisan test
