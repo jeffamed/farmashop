@@ -35,17 +35,17 @@ services:
       - .:/var/www
     networks:
       - farmashop
-  composer:
-    depends_on:
-      - php
-    image: composer:2.10.2
-    container_name: composer
-    working_dir: /var/www
-    volumes:
-      - .:/var/www
-    command: composer install
-    networks:
-      - farmashop
+  #composer:
+  #  depends_on:
+  #    - php
+  #  image: composer:2.10.2
+  #  container_name: composer
+  #  working_dir: /var/www
+  #  volumes:
+  #    - .:/var/www
+  #  command: composer install
+  #  networks:
+  #    - farmashop
   nginx:
     depends_on:
       - php

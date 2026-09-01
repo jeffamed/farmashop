@@ -1,26 +1,36 @@
 name: Laravel's Test FarmaShop
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - .github/workflows/*
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - .github/workflows/*
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - name: Get the sources project
-        uses: actions/checkout@v7
+        uses: actions/checkout@v7\
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
-      - name: check php installed
-        run: php -v
-      - name: check composer installed
-        run: composer --version
+
       - name: install dependencies
         run: composer install --prefer-dist
-      - name: Check Farmashop's Laravel version
-        run: php artisan --version
+
       - name: copy .env.example to .env
         run: cp .env.example .env
+
       - name: generate key
         run: php artisan key:generate
+
       - name: Run tests
         run: php artisan test
