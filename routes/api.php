@@ -19,7 +19,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CloseCashController;
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
-    return $request->user();
+    $userAuth = \App\Models\User::with('roles.permissions')->find($request->user()->id);
+    return new \App\Http\Resources\AuthResource($userAuth);
 });
 
 Route::middleware(['auth:sanctum'])->prefix('v1')->group(function (){
