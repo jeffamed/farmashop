@@ -15,10 +15,15 @@ class UsageService
 
     public function getUsages(array $params): Collection|LengthAwarePaginator
     {
-        $usages = Usage::query()
+        $usages =  Usage::query()
             ->latest('id')
             ->when($params['search'], fn(Builder $query, $text) => $query->searchByDescription($text));
 
-        return $params['needPagination'] ? $usages->paginate($params['pagination']) : $usages->get();
+        if($params['needPagination'] ?? null) {
+            return $usages->paginate($params['pagination']);
+        }
+
+        return $usages->get();
+
     }
 }
