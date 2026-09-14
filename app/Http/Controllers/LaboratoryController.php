@@ -23,6 +23,7 @@ class LaboratoryController extends Controller
     {
         $data = new LaboratoryFilter(
             search: (string) $request->input('search', ''),
+            input: (string) $request->input('input', ''),
             pagination: $request->integer('pagination', 10),
             needPagination: $request->boolean('needPagination', true)
         );

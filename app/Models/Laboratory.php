@@ -8,9 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Query\Builder as BuilderQuery;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 /**
- * @method static Builder|BuilderQuery searchByName(string $name)
+ * @method static Builder|BuilderQuery searchColumn(Request $data)
  */
 class Laboratory extends Model
 {

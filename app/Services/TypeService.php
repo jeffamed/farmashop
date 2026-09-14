@@ -19,6 +19,10 @@ class TypeService
             ->latest('id')
             ->when($params['search'], fn(Builder $query, $text) => $query->searchName($text));
 
-        return $params['needPagination'] ? $types->paginate($params['pagination']) : $types->get();
+        if (isset($params['needPagination'])) {
+            return $types->paginate($params['pagination']);
+        }
+
+        return $types->get();
     }
 }

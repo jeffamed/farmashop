@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
- * @method static Builder searchByName(string $name)
+ * @method static Builder searchColumn(string $name)
  */
 class Location extends Model
 {
