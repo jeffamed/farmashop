@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Laravel\Scout\Searchable;
 use App\Traits\HasSearchScope;
 use Spatie\MediaLibrary\HasMedia;
@@ -136,5 +137,10 @@ class Product extends Model implements HasMedia
         $this->addMediaConversion('thumb')->width(200)->height(200);
 
         $this->addMediaConversion('preview')->width(600)->height(600);
+    }
+
+    public function kardex(): MorphMany
+    {
+        return $this->morphMany(Kardex::class, 'referenceable');
     }
 }

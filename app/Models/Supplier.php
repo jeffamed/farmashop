@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\HasSearchScope;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -22,4 +23,23 @@ class Supplier extends Model
         'address',
         'phone',
     ];
+
+    protected function casts(): array
+    {
+        return[
+            'phone' => 'array'
+        ];
+    }
+
+    protected $appends = ['phone_number'];
+
+    protected function phoneNumber(): Attribute
+    {
+        return Attribute::make(
+            get: function() {
+                if (empty($this->phone)) return '';
+                return $this->phone['number'] ?? $this->phone;
+            }
+        );
+    }
 }
