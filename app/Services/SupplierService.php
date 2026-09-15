@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Dtos\StandardFilter;
 use App\Models\Supplier;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
@@ -13,12 +15,17 @@ class SupplierService
     {
     }
 
-    public function getSuppliers(array $params): Collection|LengthAwarePaginator
+    public function getSuppliers(StandardFilter $params): Collection|LengthAwarePaginator
     {
+        $filter = new Request([
+            'search' => $params->search,
+            'column' => $params->input,
+        ]);
+
         $suppliers = Supplier::query()
             ->latest('id')
-            ->when($params['search'], fn(Builder $query, $text) => $query->searchByName($text));
+            ->when($params->search, fn(Builder $query, $text) => $query->searchColumn($filter));
 
-        return $params['needPagination'] ? $suppliers->paginate( $params['pagination']) : $suppliers->get() ;
+        return $params->needPagination ? $suppliers->paginate( $params->pagination) : $suppliers->get() ;
     }
 }

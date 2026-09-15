@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Http\Request;
 
 /**
- * @method static Builder searchByName(string $name)
  * @method static Builder searchColumn(Request $request)
  */
 class Supplier extends Model

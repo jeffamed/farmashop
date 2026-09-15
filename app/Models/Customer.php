@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
- * @method static Builder searchByName(string $name)
+ * @method static Builder searchColumn(string $name)
  */
 class Customer extends Model
 {
@@ -30,5 +30,12 @@ class Customer extends Model
         return Attribute::make(
             get: fn() => "{$this->dni} - {$this->name} {$this->last_name}",
         );
+    }
+
+    protected function casts(): array
+    {
+        return[
+            'phone' => 'array'
+        ];
     }
 }

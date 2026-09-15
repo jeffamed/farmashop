@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Dtos\StandardFilter;
 use App\Http\Requests\SupplierRequest;
 use App\Http\Resources\SupplierResource;
 use App\Models\Supplier;
@@ -18,7 +19,14 @@ class SupplierController extends Controller
 
     public function index(Request $request)
     {
-        $suppliers = $this->service->getSuppliers($request->toArray());
+        $data = new StandardFilter(
+            search: (string) $request->input('search', ''),
+            input: (string) $request->input('input', ''),
+            pagination: $request->integer('pagination', 10),
+            needPagination: $request->boolean('needPagination', true)
+        );
+
+        $suppliers = $this->service->getSuppliers($data);
         return SupplierResource::collection($suppliers);
     }
 

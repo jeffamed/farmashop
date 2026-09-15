@@ -12,7 +12,7 @@ return new class extends Migration {
             $table->string('ruc',20)->unique();
             $table->string('name',250);
             $table->text('address')->nullable();
-            $table->string('phone',20)->nullable();
+            $table->json('phone')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

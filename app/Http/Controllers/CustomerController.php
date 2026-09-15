@@ -2,19 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Dtos\StandardFilter;
 use App\Http\Requests\CustomerRequest;
 use App\Http\Resources\CustomerResource;
 use App\Models\Customer;
+use App\Services\CustomerService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class CustomerController extends Controller
 {
+    public function __construct(private CustomerService $service)
+    {}
+
     public function index(Request $request)
     {
-        $customers = Customer::query()->searchColumn($request)
-            ->latest('id')
-            ->paginate($request->integer('pagination', 10));
+        $filter = new StandardFilter(
+            search: (string) $request->input('search', ''),
+            input: (string) $request->input('input', ''),
+            pagination: $request->integer('pagination', 10),
+            needPagination: $request->boolean('needPagination', true)
+        );
+
+        $customers = $this->service->querySearchMultiColumn($filter);
 
         return CustomerResource::collection($customers);
     }
