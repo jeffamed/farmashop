@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
+use App\Dtos\RelationshipFilter;
 use App\Models\OrderDetails;
 use App\Models\Product;
 use App\Models\Usage;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -23,29 +25,36 @@ class ProductService
         return $product;
     }
 
-    public function searchByCondition(array $data)
+    public function searchByCondition($query,array $data)
     {
         return match ($data['condition']) {
-            'code' => $this->byCode($data['search']),
+            'code' => $this->byCode($query, $data),
             'usage' => $this->byUsage($data['search']),
+            'laboratory' => $this->byRelation($query, 'laboratory', $data),
+            'type' => $this->byRelation($query, 'type', $data),
             'order' => $this->byOrder($data['search']),
             'reimbursement' => $this->byOrder($data['search'], 'reimbursement'),
-            default => $this->byName($data['search']),
+            default => $query->searchByName($data['search']),
         };
     }
 
-    private function byCode($search): Product|null
+    public function byCode($query, array $data)
     {
         $request = new Request([
-            'search' => $search,
-            'column' => 'code'
+            'column' => 'code',
+            'search' => $data['search']
         ]);
+        return $query->searchColumn($request);
+    }
 
-        $products = Product::searchCode($request)->first();
-        if ($products) {
-            $products->presentacion = $products->presentation->name;
-        }
-        return $products;
+    public function byRelation($query, string $modelRelation, array $data)
+    {
+        $filter = new RelationshipFilter(
+            modelRelation: $modelRelation,
+            search: $data['search']
+        );
+
+        return $query->searchByRelation($filter);
     }
 
     private function byUsage($search): Product|null

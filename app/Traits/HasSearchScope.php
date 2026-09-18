@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use Illuminate\Http\Request;
+use App\Dtos\RelationshipFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 
@@ -29,4 +30,12 @@ trait HasSearchScope
         $search = "%{$description}%";
         return $query->where('description', 'like', $search);
     }
+
+    #[Scope]
+    public function searchByRelation(Builder $query, RelationshipFilter $data): Builder
+    {
+        $search = "%{$data->search}%";
+        return $query->whereHas($data->modelRelation, fn($query) => $query->where($data->column, 'like', $search));
+    }
+
 }

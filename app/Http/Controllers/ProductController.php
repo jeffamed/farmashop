@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Dtos\StandardFilter;
 use App\Http\Requests\ProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\OrderDetails;
@@ -23,12 +24,19 @@ class ProductController extends Controller
     }
     public function index(Request $request)
     {
-        $products = Product::latest('id')
+        $filter = [
+            'search' => $request->input('search', ''),
+            'condition' => $request->input('input', 'name'),
+        ];
+
+        $products = Product::with('laboratory:id,name','type:id,name')
+            ->latest('id')
+            ->select('id', 'code', 'name', 'price', 'stock', 'laboratory_id', 'type_id')
             ->when($request->input('search', ''),
-                fn($q, $name) => $q->searchByName($name))
+                fn($q, $name) => $this->productService->searchByCondition($q, $filter))
                 ->paginate($request->integer('pagination', 10));
 
-        return ProductResource::collection(Product::all());
+        return ProductResource::collection($products);
     }
 
     public function store(ProductRequest $request)
@@ -69,8 +77,4 @@ class ProductController extends Controller
         return response()->json();
     }
 
-    private function search(Request $request)
-    {
-        return $this->productService->searchByCondition($request->toArray());
-    }
 }

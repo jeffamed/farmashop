@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Dtos\RelationshipFilter;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Laravel\Scout\Searchable;
 use App\Traits\HasSearchScope;
@@ -24,6 +25,7 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 /**
  * @method static Builder|QueryBuilder search(string $name)
  * @method static Builder|QueryBuilder searchByName(string $name)
+ * @method static Builder|QueryBuilder searchByRelation(RelationshipFilter $data)
  */
 #[ObservedBy([ProductObserver::class])]
 class Product extends Model implements HasMedia
