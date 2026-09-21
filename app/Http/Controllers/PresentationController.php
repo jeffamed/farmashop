@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\OptionResource;
 use App\Http\Requests\PresentationRequest;
 use App\Http\Resources\PresentationResource;
 use App\Models\Presentation;
@@ -16,6 +17,10 @@ class PresentationController extends Controller
             ->when($request->needPagination,
                 fn($query) => $query->paginate($request->integer('pagination', 10)),
                 fn($query) => $query->get());
+
+        if ($request->input('view') === 'options') {
+            return OptionResource::collection($presentations);
+        }
 
         return PresentationResource::collection($presentations);
     }

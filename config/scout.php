@@ -138,9 +138,9 @@ return [
 
     'meilisearch' => [
         'host' => env('MEILISEARCH_HOST', 'http://localhost:7700'),
-        'key' => env('MEILISEARCH_KEY'),
+        'key' => env('MEILISEARCH_KEY', ''),
         'index-settings' => [
-            'products' => [
+            \App\Models\Product::class => [
                 'filterableAttributes'=> ['id', 'name', 'code'],
             ]
             // 'users' => [

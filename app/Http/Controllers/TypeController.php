@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\OptionResource;
 use App\Http\Requests\TypeRequest;
 use App\Http\Resources\TypeResource;
 use App\Models\Type;
@@ -20,6 +21,11 @@ class TypeController extends Controller
     public function index(Request $request)
     {
         $types = $this->service->getTypes($request->toArray());
+
+        if ($request->input('view') === 'options') {
+            return OptionResource::collection($types);
+        }
+
         return TypeResource::collection($types);
     }
 

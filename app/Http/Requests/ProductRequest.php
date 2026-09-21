@@ -9,7 +9,7 @@ class ProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'code' => ['required'],
+            'code' => ['nullable', 'unique:products,code'],
             'name' => ['required'],
             'price' => ['required', 'numeric'],
             'stock' => ['required', 'integer'],

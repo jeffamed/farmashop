@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Dtos\LaboratoryFilter;
 use App\Http\Requests\LaboratoryRequest;
+use App\Http\Requests\OptionResource;
 use App\Http\Resources\LaboratoryResource;
 use App\Models\Laboratory;
 use App\Services\LaboratoryService;
@@ -21,14 +22,18 @@ class LaboratoryController extends Controller
 
     public function index(Request $request)
     {
+        $inputDefault = $request->has('view') && $request->input('view') === 'options' ? 'name' : '';
         $data = new LaboratoryFilter(
             search: (string) $request->input('search', ''),
-            input: (string) $request->input('input', ''),
+            input: (string) $request->input('input', $inputDefault),
             pagination: $request->integer('pagination', 10),
             needPagination: $request->boolean('needPagination', true)
         );
 
         $laboratories = $this->service->getLaboratories($data);
+        if ($request->input('view') === 'options') {
+            return OptionResource::collection($laboratories);
+        }
 
         return LaboratoryResource::collection($laboratories);
     }

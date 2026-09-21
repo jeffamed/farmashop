@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\locationRequest;
+use App\Http\Requests\OptionResource;
 use App\Http\Resources\locationResource;
 use App\Models\location;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class LocationController extends Controller
@@ -15,7 +17,11 @@ class LocationController extends Controller
             ->when($request->search, fn($q, $name) => $q->searchByName(name: $name))
             ->when($request->needPagination,
                 fn($query) => $query->paginate($request->integer('pagination', 10)),
-                fn($query) => $query->get());
+                fn($query) => $query->when($request->integer('limit'), fn(Builder $query) => $query->limit($request->integer('limit')))->get());
+
+        if ($request->input('view') === 'options') {
+            return OptionResource::collection($locations);
+        }
 
         return $locations->toResourceCollection();
     }

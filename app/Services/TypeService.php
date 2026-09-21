@@ -17,12 +17,12 @@ class TypeService
     {
         $types = Type::query()
             ->latest('id')
-            ->when($params['search'], fn(Builder $query, $text) => $query->searchName($text));
+            ->when($params['search'], fn(Builder $query, $text) => $query->searchByName($text));
 
-        if (isset($params['needPagination'])) {
+        if (isset($params['needPagination']) && $params['needPagination']) {
             return $types->paginate($params['pagination']);
         }
 
-        return $types->get();
+        return $types->when($params['limit'], fn(Builder $query) => $query->limit($params['limit']))->get();
     }
 }
