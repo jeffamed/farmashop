@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Dtos\FilterProduct;
 use App\Dtos\StandardFilter;
+use App\Enums\AvailabilityProduct;
 use App\Http\Requests\ProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\OrderDetails;
@@ -24,16 +26,26 @@ class ProductController extends Controller
     }
     public function index(Request $request)
     {
-        $filter = [
+        $searchable = [
             'search' => $request->input('search', ''),
             'condition' => $request->input('input', 'name'),
         ];
+        $filters = $request->array('moreFilter', []);
+        if (count($filters) > 0){
+            $filters = new FilterProduct(
+                availability: isset($filters['availability']) ? AvailabilityProduct::from($filters['availability']) : null,
+                laboratoryId: $filters['laboratory'] ?? null,
+                usageId: $filters['usage'] ?? null,
+                typeId: $filters['type'] ?? null,
+            );
+        }
 
         $products = Product::with('laboratory:id,name','type:id,name')
             ->latest('id')
             ->select('id', 'code', 'name', 'price', 'stock', 'laboratory_id', 'type_id')
+            ->when($filters, fn($q) => $this->productService->filterByCondition($q, $filters))
             ->when($request->input('search', ''),
-                fn($q, $name) => $this->productService->searchByCondition($q, $filter))
+                fn($q, $name) => $this->productService->searchByCondition($q, $searchable))
                 ->paginate($request->integer('pagination', 10));
 
         return ProductResource::collection($products);

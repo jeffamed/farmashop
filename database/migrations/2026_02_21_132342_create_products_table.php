@@ -27,6 +27,8 @@ return new class extends Migration {
             $table->foreign('supplier_id')->references('id')->on('suppliers');
             $table->unsignedBigInteger('presentation_id');
             $table->foreign('presentation_id')->references('id')->on('presentations');
+            $table->boolean('active')->default(true);
+            $table->boolean('required_prescription')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

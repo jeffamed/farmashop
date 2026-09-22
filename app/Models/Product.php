@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Dtos\RelationshipFilter;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Laravel\Scout\Searchable;
 use App\Traits\HasSearchScope;
@@ -46,6 +47,8 @@ class Product extends Model implements HasMedia
         'location_id',
         'supplier_id',
         'presentation_id',
+        'active',
+        'required_prescription',
     ];
 
     public function laboratory(): BelongsTo
@@ -68,9 +71,9 @@ class Product extends Model implements HasMedia
         return $this->belongsTo(Supplier::class);
     }
 
-    public function usages(): HasMany
+    public function usages(): BelongsToMany
     {
-        return $this->hasMany(Usage::class);
+        return $this->belongsToMany(Usage::class);
     }
 
     public function presentation(): BelongsTo

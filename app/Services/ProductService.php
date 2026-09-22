@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Dtos\FilterProduct;
 use App\Dtos\RelationshipFilter;
+use App\Enums\AvailabilityProduct;
 use App\Models\OrderDetails;
 use App\Models\Product;
 use App\Models\Usage;
@@ -36,6 +38,17 @@ class ProductService
             'reimbursement' => $this->byOrder($data['search'], 'reimbursement'),
             default => $query->searchByName($data['search']),
         };
+    }
+
+    public function filterByCondition($query, FilterProduct $filters)
+    {
+        info('filters', [$filters->availability, $filters->laboratoryId, $filters->usageId, $filters->typeId]);
+        return $query
+            ->when($filters->availability, fn($q) => $this->filterByAvailability($q, $filters->availability))
+            ->when($filters->laboratoryId, fn($q) => $this->filterByRelationship($q, 'laboratory', $filters->laboratoryId))
+            ->when($filters->usageId, fn($q) => $this->filterByRelationship($q, 'usages', $filters->usageId))
+            ->when($filters->typeId, fn($q) => $this->filterByRelationship($q, 'type', $filters->typeId))
+            ;
     }
 
     public function byCode($query, array $data)
@@ -105,4 +118,25 @@ class ProductService
                 $product['pvp'] = 0;
             });
     }
+
+    private function filterByAvailability($query, AvailabilityProduct $availabilityProduct)
+    {
+        return match ($availabilityProduct) {
+            AvailabilityProduct::Available => $query->where('stock', '>', 20),
+            AvailabilityProduct::Low => $query->whereIn('stock', [1, 20]),
+            AvailabilityProduct::OutOfStock => $query->where('stock', '=', 0),
+            default => $query,
+        };
+    }
+
+    private function filterByRelationship($query, string $model, int|array $id)
+    {
+        $column = "{$model}.id";
+        if (is_array($id)) {
+            return $query->whereHas($model, fn($q) => $q->whereIn($column, $id));
+        }
+
+        return $query->whereHas($model, fn($q) => $q->where($column, '=', $id));
+    }
+
 }
