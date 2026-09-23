@@ -42,13 +42,11 @@ class ProductService
 
     public function filterByCondition($query, FilterProduct $filters)
     {
-        info('filters', [$filters->availability, $filters->laboratoryId, $filters->usageId, $filters->typeId]);
         return $query
             ->when($filters->availability, fn($q) => $this->filterByAvailability($q, $filters->availability))
-            ->when($filters->laboratoryId, fn($q) => $this->filterByRelationship($q, 'laboratory', $filters->laboratoryId))
+            ->when($filters->laboratoryId, fn($q) => $q->whereIn('laboratory_id', $filters->laboratoryId))
             ->when($filters->usageId, fn($q) => $this->filterByRelationship($q, 'usages', $filters->usageId))
-            ->when($filters->typeId, fn($q) => $this->filterByRelationship($q, 'type', $filters->typeId))
-            ;
+            ->when($filters->typeId, fn($q) => $q->whereIn('type_id', $filters->typeId));
     }
 
     public function byCode($query, array $data)
@@ -123,7 +121,7 @@ class ProductService
     {
         return match ($availabilityProduct) {
             AvailabilityProduct::Available => $query->where('stock', '>', 20),
-            AvailabilityProduct::Low => $query->whereIn('stock', [1, 20]),
+            AvailabilityProduct::Low => $query->where([['stock', '<', 20], ['stock', '>', 0]]),
             AvailabilityProduct::OutOfStock => $query->where('stock', '=', 0),
             default => $query,
         };

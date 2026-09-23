@@ -8,8 +8,8 @@ final class FilterProduct
 {
     public function __construct(
         public ?AvailabilityProduct $availability = null,
-        public ?int $laboratoryId = null,
-        public ?int $usageId = null,
-        public ?int $typeId = null,
+        public ?array $laboratoryId = null,
+        public null|array|int $usageId = null,
+        public ?array $typeId = null,
     ) {}
 }

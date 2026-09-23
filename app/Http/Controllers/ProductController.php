@@ -30,6 +30,7 @@ class ProductController extends Controller
             'search' => $request->input('search', ''),
             'condition' => $request->input('input', 'name'),
         ];
+
         $filters = $request->array('moreFilter', []);
         if (count($filters) > 0){
             $filters = new FilterProduct(
@@ -46,15 +47,15 @@ class ProductController extends Controller
             ->when($filters, fn($q) => $this->productService->filterByCondition($q, $filters))
             ->when($request->input('search', ''),
                 fn($q, $name) => $this->productService->searchByCondition($q, $searchable))
-                ->paginate($request->integer('pagination', 10));
+                ->paginate(perPage: $request->integer('pagination', 10), page: $request->integer('page', 1));
 
         return ProductResource::collection($products);
     }
 
     public function store(ProductRequest $request)
     {
-        $product = $this->productService->create($request->validated(), $request->array('usages.*.id'));
-        $product->addMedia($request->file('image'))->toMediaCollection('images-product', 's3');
+        $product = $this->productService->create($request->validated(), $request->array('usages'));
+        //$product->addMedia($request->file('image'))->toMediaCollection('images-product', 's3');
         return new ProductResource($product);
     }
 
