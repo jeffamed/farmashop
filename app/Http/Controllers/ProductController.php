@@ -55,7 +55,14 @@ class ProductController extends Controller
     public function store(ProductRequest $request)
     {
         $product = $this->productService->create($request->validated(), $request->array('usages'));
-        //$product->addMedia($request->file('image'))->toMediaCollection('images-product', 's3');
+        if ($request->hasFile('images')){
+            #$product->addMedia($request->file('images'))->toMediaCollection('images-product', 's3');
+            foreach ($request->file('images', []) as $image) {
+                $product
+                    ->addMedia($image)
+                    ->toMediaCollection('images-product', 's3');
+            }
+        }
         return new ProductResource($product);
     }
 
