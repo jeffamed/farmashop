@@ -26,3 +26,15 @@ Thumbs.db
 /meili_data/*
 /minio_data
 /minio_data/*
+/mysql_data
+/mysql_data/*
+/redis_data
+/redis_data/*
+/storage
+/bootstrap/cache
+/storage/app/*
+/storage/framework/cache/data
+/storage/framework/sessions
+/storage/framework/views
+/storage/logs
+/bootstrap/cache/*
