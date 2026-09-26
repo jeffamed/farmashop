@@ -23,6 +23,6 @@ class TypeService
             return $types->paginate($params['pagination']);
         }
 
-        return $types->when($params['limit'], fn(Builder $query) => $query->limit($params['limit']))->get();
+        return $types->when(isset($params['limit']) && $params['limit'], fn(Builder $query) => $query->limit($params['limit']))->get();
     }
 }

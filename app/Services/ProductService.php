@@ -2,16 +2,13 @@
 
 namespace App\Services;
 
+use App\Models\Product;
 use App\Dtos\FilterProduct;
+use Illuminate\Http\Request;
 use App\Dtos\RelationshipFilter;
 use App\Enums\AvailabilityProduct;
-use App\Models\OrderDetails;
-use App\Models\Product;
-use App\Models\Usage;
-use Illuminate\Database\Query\Builder;
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
+use App\Actions\GenerateCodeProduct;
 
 class ProductService
 {
@@ -20,6 +17,8 @@ class ProductService
 
     public function create(array $data, array $usages): Product
     {
+        $data['code'] = $data['code'] ?: (new GenerateCodeProduct)->handle();
+
         $product = Product::create($data);
         if (count($usages) > 0){
             $product->usages()->sync($usages);
