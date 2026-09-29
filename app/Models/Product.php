@@ -63,7 +63,7 @@ class Product extends Model implements HasMedia
 
     public function location(): BelongsTo
     {
-        return $this->belongsTo(location::class);
+        return $this->belongsTo(Location::class);
     }
 
     public function supplier(): BelongsTo
