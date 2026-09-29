@@ -36,23 +36,29 @@ class ProductResource extends JsonResource
             'discount' => $this->discount,
             'box_stock' => $this->box_stock,
             'unit_box' => $this->unit_box,
-            'cost' => $this->cost,
-            'costPrev' => $this->costPrev,
+            'cost' => $this->whenLoaded('lastOrderDetails', fn() => $this->cost),
             'expired_at' => $this->expired_at,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'laboratory_id' => $this->laboratory_id,
-            'type_id' => $this->type_id,
-            'location_id' => $this->location_id,
-            'supplier_id' => $this->supplier_id,
-            'presentation_id' => $this->presentation_id,
-            'image' => $this->whenLoaded('media', fn () => $this->getFirstMediaUrl('images-product', 'thumb')),
-            /*'laboratory' => $this->whenLoaded('laboratory', fn() => $this->laboratory->name),
-            'type' => $this->whenLoaded('type', fn() => $this->type->name),
-            'location' => $this->whenLoaded('location', fn() => $this->location->name),
-            'supplier' => $this->whenLoaded('supplier', fn() => $this->supplier->name),
-            'presentation' => $this->whenLoaded('presentation', fn() => $this->presentation->name),
-            'usagesId' => $this->whenLoaded('usages', fn() => $this->usages->pluck('id')->toArray()),*/
+            'type' => $this->whenLoaded('type')->name ?? '',
+            'laboratory' => $this->whenLoaded('laboratory', function() {
+                return [
+                    'name' => $this->laboratory->name ?? '',
+                    'address' => $this->laboratory->address ?? '',
+                ];
+            }),
+            'location' => $this->whenLoaded('location')->name ?? '',
+            'supplier' => $this->whenLoaded('supplier', function() {
+                return [
+                    'ruc' => $this->supplier->ruc ?? '',
+                    'name' => $this->supplier->name ?? '',
+                    'address' => $this->supplier->address ?? '',
+                    'telephone' => $this->supplier->phone ? $this->supplier->phone['number']: '',
+                ];
+            }),
+            'usages' => $this->whenLoaded('usages', fn() => $this->usages->map(fn($usage) => $usage->description)),
+            'presentation' => $this->whenLoaded('presentation')->name ?? '',
+            'image' =>  $this->whenLoaded('media', fn () => $this->getFirstMediaUrl('images-product', 'preview'))
         ];
     }
 }

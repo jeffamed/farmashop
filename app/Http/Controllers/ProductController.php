@@ -58,9 +58,7 @@ class ProductController extends Controller
         if ($request->hasFile('images')){
             #$product->addMedia($request->file('images'))->toMediaCollection('images-product', 's3');
             foreach ($request->file('images', []) as $image) {
-                $product
-                    ->addMedia($image)
-                    ->toMediaCollection('images-product', 's3');
+                $product->addMedia($image)->toMediaCollection('images-product', 's3');
             }
         }
         return new ProductResource($product);
@@ -68,10 +66,11 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        $data = Cache::store('redis')
+        /*$data = Cache::store('redis')
             ->remember("product:{$product->id}", 3600,
-                fn() => (new ProductResource($product->load('media')))->resolve()
-            );
+                fn() => (new ProductResource($product->load(['type','media'])))->resolve()
+            );*/
+        $data = (new ProductResource($product->load(['type', 'lastOrderDetails', 'laboratory', 'presentation', 'location', 'supplier', 'usages:id,description','media'])))->resolve();
 
         return response()->json($data);
     }
