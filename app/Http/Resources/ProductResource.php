@@ -17,8 +17,10 @@ class ProductResource extends JsonResource
             'name' => $this->name,
             'unit_price' => $this->price,
             'stock' => $this->stock,
+            'active' => $this->active,
             $this->mergeWhen($request->routeIs('products.index'), fn() => $this->mergeIndex()),
             $this->mergeWhen($request->routeIs('products.show'), fn() =>$this->mergeShow()),
+            $this->mergeWhen($request->routeIs('products.edit'), fn() => $this->mergeEdit()),
         ];
     }
 
@@ -59,6 +61,22 @@ class ProductResource extends JsonResource
             'usages' => $this->whenLoaded('usages', fn() => $this->usages->map(fn($usage) => $usage->description)),
             'presentation' => $this->whenLoaded('presentation')->name ?? '',
             'image' =>  $this->whenLoaded('media', fn () => $this->getFirstMediaUrl('images-product', 'preview'))
+        ];
+    }
+
+    private function mergeEdit(): array
+    {
+        return [
+            'discount' => $this->discount,
+            'cost' => 0,
+            'unit_box' => $this->unit_box,
+            'laboratory_id' => $this->laboratory_id,
+            'type_id' => $this->type_id,
+            'presentation_id' => $this->presentation_id,
+            'location_id' => $this->location_id,
+            'supplier_id' => $this->supplier_id,
+            'usages' => $this->usages->map(fn($usage) => $usage->id),
+            'image_current' =>  $this->whenLoaded('media', fn () => $this->getFirstMediaUrl('images-product', 'thumb'))
         ];
     }
 }

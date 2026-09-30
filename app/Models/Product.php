@@ -114,6 +114,7 @@ class Product extends Model implements HasMedia
     {
         return [
             'expired_at' => 'datetime',
+            'active' => 'boolean',
         ];
     }
 

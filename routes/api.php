@@ -32,6 +32,8 @@ Route::middleware(['auth:sanctum'])->prefix('v1')->group(function (){
     Route::apiResource('orders', OrderController::class);
     Route::apiResource('bonus-products', BonusProductController::class);
     Route::apiResource('products', ProductController::class);
+    Route::get('products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
+    Route::patch('product/{product}/active', [ProductController::class, 'active'])->name('product.active');
     Route::get('reports', [ReportController::class, 'index'])->name('reports');
     Route::apiResource('suppliers', SupplierController::class);
     Route::apiResource('sales', SaleController::class);

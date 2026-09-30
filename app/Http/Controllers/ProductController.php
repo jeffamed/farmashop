@@ -2,20 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Dtos\FilterProduct;
-use App\Dtos\StandardFilter;
+use Illuminate\Http\Request;
+use App\Services\ProductService;
 use App\Enums\AvailabilityProduct;
 use App\Http\Requests\ProductRequest;
 use App\Http\Resources\ProductResource;
-use App\Models\OrderDetails;
-use App\Models\Product;
-use App\Models\Usage;
-use App\Services\ProductService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
-use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
-use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
+use App\Http\Requests\UpdateProductRequest;
 
 class ProductController extends Controller
 {
@@ -43,7 +37,7 @@ class ProductController extends Controller
 
         $products = Product::with('laboratory:id,name','type:id,name')
             ->latest('id')
-            ->select('id', 'code', 'name', 'price', 'stock', 'laboratory_id', 'type_id')
+            ->select('id', 'code', 'name', 'price', 'stock', 'laboratory_id', 'type_id', 'active')
             ->when($filters, fn($q) => $this->productService->filterByCondition($q, $filters))
             ->when($request->input('search', ''),
                 fn($q, $name) => $this->productService->searchByCondition($q, $searchable))
@@ -75,15 +69,23 @@ class ProductController extends Controller
         return response()->json($data);
     }
 
-    public function update(ProductRequest $request, Product $product)
+    public function edit(Product $product)
+    {
+        $data = (new ProductResource($product->load(['usages','media'])))->resolve();
+
+        return response()->json($data);
+    }
+
+    public function update(UpdateProductRequest $request, Product $product)
     {
         $product->update($request->validated());
-        if ($request->hasFile('image')) {
-            $product->addMedia($request->file('image'))
-                ->toMediaCollection('images-product', 's3');
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images', []) as $image) {
+                $product->addMedia($image)->toMediaCollection('images-product', 's3');
+            }
         }
-        if ($request->array('usages.*.id')) {
-            $product->usages()->sync($request->array('usages.*.id'));
+        if ($request->array('usages')) {
+            $product->usages()->sync($request->array('usages'));
         }
 
         return new ProductResource($product);
@@ -94,6 +96,12 @@ class ProductController extends Controller
         $product->delete();
 
         return response()->json();
+    }
+
+    public function active(Product $product, Request $request)
+    {
+        $product->update(['active' => $request->boolean('active')]);
+        return new ProductResource($product);
     }
 
 }
