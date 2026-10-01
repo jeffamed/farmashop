@@ -24,7 +24,7 @@ class OrderResource extends JsonResource
             'supplier_id' => $this->supplier_id,
             'user_id' => $this->user_id,
 
-            'supplier' => new SupplierResource($this->whenLoaded('supplier')),
+            //'supplier' => new SupplierResource($this->whenLoaded('supplier')),
         ];
     }
 }

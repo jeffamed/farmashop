@@ -60,11 +60,10 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        /*$data = Cache::store('redis')
+        $data = Cache::store('redis')
             ->remember("product:{$product->id}", 3600,
-                fn() => (new ProductResource($product->load(['type','media'])))->resolve()
-            );*/
-        $data = (new ProductResource($product->load(['type', 'lastOrderDetails', 'laboratory', 'presentation', 'location', 'supplier', 'usages:id,description','media'])))->resolve();
+                fn() => (new ProductResource($product->load(['type', 'lastOrderDetails', 'laboratory', 'presentation', 'location', 'supplier', 'usages:id,description','media'])))->resolve()
+            );
 
         return response()->json($data);
     }

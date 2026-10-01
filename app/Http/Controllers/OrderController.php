@@ -19,12 +19,16 @@ class OrderController extends Controller
 
     public function index(Request $request)
     {
-        $condition = (string) $request->input('condition', '');
+        /*$condition = (string) $request->input('condition', '');
         $orders = match ($condition){
             'supplier' => $this->service->getOrderBySupplier($request->toArray()),
             'user' => $this->service->getOrderByUser($request->toArray()),
             default => $this->service->ordersQuery($request->toArray()),
-        };
+        };*/
+        $orders = Order::with('supplier', 'user', 'details.product', 'reimbursement')
+            ->latest('id')
+            ->select('id', 'number_order', 'iva', 'subtotal', 'total', 'discount', 'supplier_id', 'user_id', 'total', 'created_at', 'updated_at')
+            ->paginate(perPage: $request->integer('pagination', 10), page: $request->integer('page', 1));
 
         return OrderResource::collection($orders);
     }
